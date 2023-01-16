@@ -12,17 +12,10 @@ class ChatbotApp(tk.Tk):
         self.main()
         self.convo_filename = "_chat.txt"
 
-    def input_api_key(self):
-        apikeyframe = tk.Frame(self)
-        apikeyframe.pack(padx=10, pady=10)
-
-        apientry = tk.Entry(apikeyframe, width=25, font=("ariel", 16))
-        apientry.pack(side=tk.LEFT, padx=5)
-
-    def main(self):
+    def main(self): # the main app window
         self.conversation = '''The following Is a conversation with an AI assistant. The assistant Is helpful, creative, clever, and very friendly.\n\nUser:Hello, how are you?\nAI:'''  # variable to keep track of the conversation
         # self.conversation = '''The following is a conversation between two a human user and an advanced AI.\nUser:Hello\nAI:'''
-        # Set up the OpenAI API key
+        # Set up the OpenAI API key, loaded from a .env file containing the token as API_TOKEN=""
         openai.api_key = str(os.environ["API_TOKEN"])
 
         # Create a frame to hold the chat messages
@@ -51,7 +44,7 @@ class ChatbotApp(tk.Tk):
         self.initial = True
         self.submit_chat()
 
-    def submit_chat(self):
+    def submit_chat(self):  # submits the conversation to OpenAI servers for model
         user_input = self.input_entry.get()
         if not self.initial:
             self.conversation = self.messages.get(1.0, tk.END)
@@ -61,6 +54,7 @@ class ChatbotApp(tk.Tk):
             self.initial = False
 
         # Send the conversation to the OpenAI API
+        # Change engine="" to change the text completion engine used
         response = openai.Completion.create(
             engine="text-davinci-003",
             prompt=(f"{self.conversation}"),
@@ -77,7 +71,7 @@ class ChatbotApp(tk.Tk):
         self.messages.insert(tk.END, self.conversation)
         self.input_entry.delete(0, tk.END)
     
-    def save_convo(self):
+    def save_convo(self):   # Saves the conversation to disk
         with open(self.convo_filename, "a") as f:
             f.write(f"\n[{time.time()}]\n\n")
             f.write(self.conversation)
