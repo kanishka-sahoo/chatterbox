@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+# Set up the OpenAI API key, loaded from a .env file containing the token as API_TOKEN=""
 openai.api_key = str(os.environ["API_TOKEN"])
 
 def get_response(conversation):

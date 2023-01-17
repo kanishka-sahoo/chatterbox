@@ -18,7 +18,6 @@ class ChatbotApp(tk.Tk):
     def main(self): # the main app window
         self.conversation = '''The following Is a conversation with an AI assistant. The assistant Is helpful, creative, clever, and very friendly.\n\nUser:Hello, how are you?\nAI:'''  # variable to keep track of the conversation
         # self.conversation = '''The following is a conversation between two a human user and an advanced AI.\nUser:Hello\nAI:'''
-        # Set up the OpenAI API key, loaded from a .env file containing the token as API_TOKEN=""
         # Create a frame to hold the chat messages
         messages_frame = tk.Frame(self)
         messages_frame.pack(padx=10, pady=10)
