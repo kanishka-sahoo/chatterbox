@@ -1,23 +1,24 @@
-import tkinter as tk
-import openai, time
-from dotenv import load_dotenv
-import os
+'''
+OpenAI Chatbot, Enables a user to communicate with the GPT3 Chatbot in a conversational manner.
+This is the user interface for the program.
+'''
 
-load_dotenv()
+import tkinter as tk, time
+import openai_interface as oif  # uses custom interface to make maintenance easier.
+
 class ChatbotApp(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("Chatbot")
         self.geometry("600x600")
-        self.main()
         self.convo_filename = "_chat.txt"
+        self.last_response = ""
+        self.main()
 
     def main(self): # the main app window
         self.conversation = '''The following Is a conversation with an AI assistant. The assistant Is helpful, creative, clever, and very friendly.\n\nUser:Hello, how are you?\nAI:'''  # variable to keep track of the conversation
         # self.conversation = '''The following is a conversation between two a human user and an advanced AI.\nUser:Hello\nAI:'''
         # Set up the OpenAI API key, loaded from a .env file containing the token as API_TOKEN=""
-        openai.api_key = str(os.environ["API_TOKEN"])
-
         # Create a frame to hold the chat messages
         messages_frame = tk.Frame(self)
         messages_frame.pack(padx=10, pady=10)
@@ -46,6 +47,11 @@ class ChatbotApp(tk.Tk):
 
     def submit_chat(self):  # submits the conversation to OpenAI servers for model
         user_input = self.input_entry.get()
+        '''
+        if self.last_response != "":
+            self.conversation = self.conversation.partition('/')[0][:-6:]
+            print(self.conversation)
+        '''
         if not self.initial:
             self.conversation = self.messages.get(1.0, tk.END)
             # Add the user's input to the conversation
@@ -53,19 +59,8 @@ class ChatbotApp(tk.Tk):
         else:
             self.initial = False
 
-        # Send the conversation to the OpenAI API
-        # Change engine="" to change the text completion engine used
-        response = openai.Completion.create(
-            engine="text-davinci-003",
-            prompt=(f"{self.conversation}"),
-            max_tokens=2048,
-            n = 1,
-            stop=None,
-            temperature=0.7,
-        )
-
         # Add the chatbot's response to the conversation
-        self.conversation += f"{response['choices'][0]['text']}\n"
+        self.last_response, self.conversation = oif.process_user_input(self.conversation, user_input)
         # Display the conversation
         self.messages.delete(1.0, tk.END)
         self.messages.insert(tk.END, self.conversation)
