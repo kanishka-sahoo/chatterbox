@@ -1,6 +1,7 @@
 '''
 OpenAI Chatbot, Enables a user to communicate with the GPT3 Chatbot in a conversational manner.
 This is the interface between the chatbot and the program.
+Author: Kanishka Sahoo
 '''
 import openai, os
 import time
@@ -22,13 +23,14 @@ def get_response(conversation):
         stop=None,
         temperature=0.7,
     )
-    conversation += f"{response['choices'][0]['text']}\n"
-    return conversation
+    resp = f"{response['choices'][0]['text']}\n"
+    return resp
 
 def process_user_input(conversation: str, user_input: str):
     # Checks the user input and allows for sending of commands starting with '/'
-    if not user_input.startswith('/'):
-        return "", get_response(conversation)
+    # if not user_input.startswith('/'):
+    return "", get_response(conversation)
+    '''
     match user_input[1::]:
         case "time":
             response = time.strftime("%H:%M:%S")
@@ -41,3 +43,4 @@ def process_user_input(conversation: str, user_input: str):
         case other:
             response = "The command could not be found"
     return user_input + response, conversation + response
+    '''
