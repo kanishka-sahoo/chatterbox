@@ -14,20 +14,21 @@ load_dotenv()
 # I_TOKEN=""
 openai.api_key = str(os.environ["API_TOKEN"])
 
-
-def get_response(conversation):
+messages = []
+use_model = 'text-davinci-003'
+def get_response(prompt):
+    global messages
     # Send the conversation to the OpenAI API
     # Change engine="" to change the text completion engine used
-    response = openai.Completion.create(
-        engine="text-davinci-003",
-        prompt=(f"{conversation}"),
-        max_tokens=2048,
-        n=1,
-        stop=None,
-        temperature=0.7,
+    messages.append({'role':'system', 'content': 'You are a helpful AI assistant.'})
+    messages.append({'role':'user', 'content':str(prompt)})
+    response = openai.ChatCompletion.create(
+        model=use_model,
+        messages=messages
     )
-    resp = f"{response['choices'][0]['text']}\n"
-    return resp
+    resp = response['choices'][0]['message']
+    messages.append(resp)
+    return f"""{resp['content']}\n"""
 
 
 def process_user_input(conversation: str, user_input: str):
